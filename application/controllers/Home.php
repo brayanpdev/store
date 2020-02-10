@@ -53,6 +53,11 @@ class Home extends CI_Controller {
 
 			if ($safeData!=false) {
 				$data["message2"]="data saved in database";
+
+				/**
+				 * send email
+				 */
+				$this->sendEmail('userEmail@gmail.com');
 				
 			}else{
 				$data["message2"]="data not saved in database";
@@ -65,6 +70,32 @@ class Home extends CI_Controller {
 		}		
 
 		echo json_encode($data);exit;
+	}
+
+	function sendEmail($email){
+		$this->email->from('pruebas@store.com','Albums Store');
+                $this->email->to($email);
+                $this->email->subject('email notification');
+
+                $data=array();
+
+                $this->email->message($this->load->view('notif_email', $data, TRUE));
+
+                
+                //$r = $this->email->send(true);
+                $r = true;
+                $this->email->clear(true);
+
+                if (!$r):
+                    //var_dump($this->email->print_debugger());
+                    return array(
+                                    'result'=>false
+                            );
+                else:
+                    return array(
+                                    'result'=>true
+                            );
+                endif;
 	}
 
 }
